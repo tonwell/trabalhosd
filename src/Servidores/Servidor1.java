@@ -28,7 +28,7 @@ public class Servidor1 extends java.applet.Applet implements Runnable{
    
     public static void main(String[] args)  throws IOException{ 
         buffer="a";
-        arquivos.add("Imagem.png");
+        arquivos.add("a/Imagem.png");
         levantaServidorNaPorta(11111);
       
     }

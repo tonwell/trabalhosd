@@ -30,7 +30,7 @@ public class Servidor3 implements Runnable{
 
     public static void main(String[] args)  throws IOException{
         buffer="a";
-        arquivos.add("Moto.png");
+        arquivos.add("b/Moto.png");
         levantaServidorNaPorta(11113);
       
     }

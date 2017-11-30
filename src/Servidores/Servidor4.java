@@ -28,7 +28,7 @@ public class Servidor4 implements Runnable{
 
     public static void main(String[] args)  throws IOException{ 
         buffer="a";
-        arquivos.add("predio.png");
+        arquivos.add("b/predio.png");
         levantaServidorNaPorta(11114);
       
     }

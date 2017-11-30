@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,8 +62,9 @@ public class Midleware extends java.applet.Applet implements Runnable{
         }
     }
     
-    public static String recuperaListaDeTodosArqs() throws IOException{
-        String resp="";
+    public static ArrayList<String> recuperaListaDeTodosArqs() throws IOException{
+        //resp virou uma arraylist de strings pq e o que faz mais sentido
+        ArrayList<String> resp = new ArrayList();
         for (int i = 0; i < ArrayServidores.length ; i++) {
            Socket socket = new Socket("localhost", Integer.parseInt(ArrayServidores[i]));
            Scanner entrada = null;
@@ -70,35 +72,27 @@ public class Midleware extends java.applet.Applet implements Runnable{
            PrintStream saida;
            saida = new PrintStream(socket.getOutputStream());
            saida.println("Req");
-           resp=resp+entrada.nextLine();
+           resp.add(entrada.nextLine());
            socket.close();
         }
         return resp;
     }
     
-    public static String recuperaArqsDeCliente(String hostAdress){
-        String resp="";
-        for (int i = 0; i < ArrayServidores.length ; i++) {
-           Socket socket;
-            try {
-                socket = new Socket("localhost", Integer.parseInt(ArrayServidores[i]));
-                if(!socket.getInetAddress().getHostAddress().equals(hostAdress)) continue;
-                Scanner entrada = null;
-                entrada = new Scanner(socket.getInputStream());
-                PrintStream saida;
-                saida = new PrintStream(socket.getOutputStream());
-                saida.println("Req");
-                resp=resp+entrada.nextLine();
-                socket.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Midleware.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    public static ArrayList<String> recuperaArqsDeCliente(String hostName) throws IOException{
+        //resp virou uma arraylist de strings pq e o que faz mais sentido
+        ArrayList<String> resp = new ArrayList();
+        ArrayList<String> arquivosEx = recuperaListaDeTodosArqs();
+        String[] partes;
+        for (int i = 0; i < arquivosEx.size(); i++) {
+            partes = arquivosEx.get(i).split("/");
+            //arquivo é do cliente
+            if (partes[0].equalsIgnoreCase(hostName)) resp.add(partes[2]);
         }
         return resp;
     }
     
     public void run(){
-        System.out.println("Nova conexao com o cliente " + this.cliente.getInetAddress().getHostName() + " " + this.cliente.getInetAddress().getHostAddress());           
+        System.out.println("Nova conexao com o cliente " + this.cliente.getInetAddress().getHostName() + " " + this.cliente.getInetAddress().getHostAddress());
         try {
             
             // Cria o objeto para receber as mensagens
@@ -134,6 +128,12 @@ public class Midleware extends java.applet.Applet implements Runnable{
             this.cliente.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    
+    public void imprime(ArrayList<String> lista, PrintStream saida) {
+        for (int i = 0; i < lista.size(); i++) {
+            saida.println(lista.get(i) + "\n");
         }
     }
 }
