@@ -28,7 +28,13 @@ public class Servidor1 extends java.applet.Applet implements Runnable{
    
     public static void main(String[] args)  throws IOException{ 
         buffer="a";
-        arquivos.add("Imagem.png");
+        arquivos.add("a/Imagem1.png");
+        arquivos.add("b/Imagem2.png");
+        arquivos.add("a/Imagem3.png");
+        arquivos.add("c/Imagem4.png");
+        arquivos.add("a/Imagem5.png");
+        arquivos.add("b/Imagem6.png");
+        arquivos.add("a/Imagem7.png");
         levantaServidorNaPorta(11111);
       
     }
@@ -40,6 +46,10 @@ public class Servidor1 extends java.applet.Applet implements Runnable{
           //Cria um socket na porta 11111
         ServerSocket servidor = new ServerSocket (porta);
         System.out.println("Porta 11111 aberta!");
+        System.out.println("Listando arquivos locais: ");
+        for(String arquivo: arquivos){
+            System.out.println(" - "+arquivo);
+        }
 
         // Aguarda alguém se conectar. A execução do servidor
         // fica bloqueada na chamada do método accept da classe
@@ -60,15 +70,17 @@ public class Servidor1 extends java.applet.Applet implements Runnable{
     
     
     public static String executaListar() throws IOException{
-           Socket socket = new Socket("localhost", 11110);
-           PrintStream saida;
-           saida = new PrintStream(socket.getOutputStream());
-           Scanner entrada = null;
-           entrada = new Scanner(socket.getInputStream());
-           saida.println("Lista");
-           String aux= entrada.nextLine();
-           socket.close();
-           return aux;
+            Socket socket = new Socket("localhost", 11110);
+            PrintStream saida;
+            saida = new PrintStream(socket.getOutputStream());
+            Scanner entrada = null;
+            entrada = new Scanner(socket.getInputStream());
+            saida.println("Lista");
+            String aux = "";
+            if(entrada.hasNextLine())
+                aux = entrada.nextLine();
+            socket.close();
+            return aux;
            
            
         

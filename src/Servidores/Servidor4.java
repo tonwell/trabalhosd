@@ -28,7 +28,10 @@ public class Servidor4 implements Runnable{
 
     public static void main(String[] args)  throws IOException{ 
         buffer="a";
-        arquivos.add("predio.png");
+        arquivos.add("c/predio1.png");
+        arquivos.add("c/predio2.png");
+        arquivos.add("d/predio3.png");
+        arquivos.add("d/predio4.png");
         levantaServidorNaPorta(11114);
       
     }
@@ -40,6 +43,10 @@ public class Servidor4 implements Runnable{
           //Cria um socket na porta 11114
         ServerSocket servidor = new ServerSocket (porta);
         System.out.println("Porta 11114 aberta!");
+        System.out.println("Listando arquivos locais: ");
+        for(String arquivo: arquivos){
+            System.out.println(" - "+arquivo);
+        }
 
         // Aguarda alguém se conectar. A execução do servidor
         // fica bloqueada na chamada do método accept da classe
@@ -65,7 +72,9 @@ public class Servidor4 implements Runnable{
            Scanner entrada = null;
            entrada = new Scanner(socket.getInputStream());
            saida.println("Lista");
-           String aux= entrada.nextLine();
+            String aux = "";
+            if(entrada.hasNextLine())
+                aux = entrada.nextLine();
            socket.close();
            return aux;
            

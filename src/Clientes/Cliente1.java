@@ -23,6 +23,7 @@ import java.util.Scanner;
     public Socket cliente;
     private static String controleC;
     public String nome;
+    private static Scanner teclado;
 
     public Cliente1(Socket cliente){
         this.cliente = cliente;
@@ -32,10 +33,14 @@ import java.util.Scanner;
         
        portaAConectar= 11110;
        controleC="1";
+       teclado = new Scanner(System.in);
        while(controleC.compareTo("sair")!=0){
          conectaAoServidor(portaAConectar);
-         controleC="d";
+         System.out.println("Digite \"sair\" para sair da aplicação ou qqr coisa para continuar");
+         
+         controleC = teclado.nextLine();
        }
+       teclado.close();
     }
     
     public static boolean conectaAoServidor(int porta) throws UnknownHostException, IOException{
@@ -49,10 +54,9 @@ import java.util.Scanner;
         /*Cria um novo objeto Cliente com a conexão socket para que seja executado em um novo processo.
         Permitindo assim a conexão de vário clientes com o servidor.*/
         Cliente1 c = new Cliente1(socket);
-        c.nome = "Cliente 1";
-        Thread t = new Thread(c);
-        t.start();
-        while(t.isAlive());
+        System.out.println("Indentifique o seu nome: ");
+        c.nome = teclado.nextLine();
+        c.run();
         socket.close();
         return true;
     }
@@ -60,10 +64,9 @@ import java.util.Scanner;
     public void run() {
         try {
             PrintStream saida;
-            System.out.println("O cliente " + this.nome + "conectou ao servidor");
+            System.out.println("O cliente " + this.nome + " conectou ao servidor");
 
             //Prepara para leitura do teclado
-            Scanner teclado = new Scanner(System.in);
 
             //Cria  objeto para enviar a mensagem ao servidor
             saida = new PrintStream(this.cliente.getOutputStream());
@@ -71,9 +74,20 @@ import java.util.Scanner;
             // Cria o objeto para receber as respostas do servidor
             Scanner entrada = null;
             entrada = new Scanner(this.cliente.getInputStream());
-
+            
+            // Envia nome que o cliente indentificou para o middleware
+            saida.println(this.nome);
             //Envia mensagem ao servidor
             while(controleC.compareTo("s")!=0){
+                System.out.println("Digite s para sair ou d para listar arquivos");
+                controleC = teclado.nextLine();
+                
+                if(controleC.compareTo("s")==0){
+                    saida.println(controleC);
+                    break;
+                }
+                    
+                    
                 // Envia a menssagem ao servidor
                 if(controleC.compareTo("1")==0){
                     saida.println(controleC); 
@@ -96,7 +110,6 @@ import java.util.Scanner;
             }
             entrada.close();
             saida.close();
-            teclado.close();
             this.cliente.close();
             System.out.println("Fim do cliente!");
         } catch (IOException e) {
