@@ -20,6 +20,7 @@ import java.util.logging.Logger;
  */
 public class Midleware extends java.applet.Applet implements Runnable{
     public Socket cliente;
+    public String nomeCliente;
     private static String controleM;
     public static String ArrayServidores[] ={ "11111","11112","11113","11114"};
 
@@ -86,13 +87,13 @@ public class Midleware extends java.applet.Applet implements Runnable{
         for (int i = 0; i < arquivosEx.size(); i++) {
             partes = arquivosEx.get(i).split("/");
             //arquivo é do cliente
-            if (partes[0].equalsIgnoreCase(hostName)) resp.add(partes[2]);
+            if (partes[0].equalsIgnoreCase(hostName)) resp.add(partes[1]);
         }
         return resp;
     }
     
     public void run(){
-        System.out.println("Nova conexao com o cliente " + this.cliente.getInetAddress().getHostName() + " " + this.cliente.getInetAddress().getHostAddress());
+        System.out.println("Nova conexao com o cliente " + this.cliente.getInetAddress().getHostName());
         try {
             
             // Cria o objeto para receber as mensagens
@@ -102,7 +103,10 @@ public class Midleware extends java.applet.Applet implements Runnable{
             //Cria  objeto para enviar a mensagem ao servidor
             PrintStream saida;
             saida = new PrintStream(this.cliente.getOutputStream());
-
+            
+            this.nomeCliente = entrada.nextLine();
+            System.out.println("Nome acordado com o cliente " + this.nomeCliente);
+            
              controleM="d";
             while(controleM.compareTo("s")!=0){
                 // lê a menssagem do cliente e exibe mensagem no console
@@ -114,7 +118,9 @@ public class Midleware extends java.applet.Applet implements Runnable{
                 break;
                }else{
                     if(controleM.compareTo("Lista")==0){
-                        saida.println(recuperaListaDeTodosArqs());
+                        System.out.println("Listando arquivos encontrados: ");
+                        System.out.println(recuperaArqsDeCliente(this.nomeCliente));
+                        saida.println(recuperaArqsDeCliente(this.nomeCliente));
                         controleM="s";
                     }else{
                     saida.println("recebido" + controleM);

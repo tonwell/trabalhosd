@@ -30,7 +30,12 @@ public class Servidor3 implements Runnable{
 
     public static void main(String[] args)  throws IOException{
         buffer="a";
-        arquivos.add("b/Moto.png");
+        arquivos.add("b/Moto1.png");
+        arquivos.add("b/Moto2.png");
+        arquivos.add("b/Moto3.png");
+        arquivos.add("c/Moto4.png");
+        arquivos.add("c/Moto5.png");
+        arquivos.add("d/Moto6.png");
         levantaServidorNaPorta(11113);
       
     }
@@ -42,6 +47,10 @@ public class Servidor3 implements Runnable{
           //Cria um socket na porta 11113
         ServerSocket servidor = new ServerSocket (porta);
         System.out.println("Porta 11113 aberta!");
+        System.out.println("Listando arquivos locais: ");
+        for(String arquivo: arquivos){
+            System.out.println(" - "+arquivo);
+        }
 
         // Aguarda alguém se conectar. A execução do servidor
         // fica bloqueada na chamada do método accept da classe
@@ -67,7 +76,9 @@ public class Servidor3 implements Runnable{
            Scanner entrada = null;
            entrada = new Scanner(socket.getInputStream());
            saida.println("Lista");
-           String aux= entrada.nextLine();
+            String aux = "";
+            if(entrada.hasNextLine())
+                aux = entrada.nextLine();
            socket.close();
            return aux;
            
